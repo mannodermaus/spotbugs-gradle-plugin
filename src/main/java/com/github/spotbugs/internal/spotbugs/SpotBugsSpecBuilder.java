@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class SpotBugsSpecBuilder {
     private File excludeBugsFilter;
     private Collection<String> extraArgs;
     private Collection<String> jvmArgs;
+    private Map<String, Object> systemProperties;
     private boolean showProgress;
     private boolean debugEnabled;
 
@@ -151,6 +153,11 @@ public class SpotBugsSpecBuilder {
         return this;
     }
 
+    public SpotBugsSpecBuilder withSystemProperties(@Nullable Map<String, Object> systemProperties) {
+        this.systemProperties = systemProperties;
+        return this;
+    }
+
     public SpotBugsSpec build() {
         ArrayList<String> args = new ArrayList<>();
         args.add("-pluginList");
@@ -238,7 +245,9 @@ public class SpotBugsSpecBuilder {
             args.add(classFile.getAbsolutePath());
         }
 
-        return new SpotBugsSpec(args, maxHeapSize, debugEnabled, (Collection)(this.jvmArgs == null ? Collections.emptyList() : this.jvmArgs));
+        return new SpotBugsSpec(args, maxHeapSize, debugEnabled,
+                (this.jvmArgs == null ? Collections.emptyList() : this.jvmArgs),
+                (this.systemProperties == null ? Collections.emptyMap() : this.systemProperties));
     }
 
     private boolean has(String str) {

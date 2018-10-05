@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -85,6 +87,8 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
     private Collection<String> extraArgs = new ArrayList<>();
 
     private Collection<String> jvmArgs = new ArrayList<>();
+
+    private Map<String, Object> systemProperties = new HashMap<>();
 
     @Nested
     private final SpotBugsReportsInternal reports;
@@ -255,6 +259,7 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
                 .withExcludeBugsFilter(getExcludeBugsFilter())
                 .withExtraArgs(getExtraArgs())
                 .withJvmArgs(getJvmArgs())
+                .withSystemProperties(getSystemProperties())
                 .configureReports(getReports());
 
         return specBuilder.build();
@@ -310,6 +315,16 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
 
     public SpotBugsTask jvmArgs(String... arguments) {
         jvmArgs.addAll(Arrays.asList(arguments));
+        return this;
+    }
+
+    public SpotBugsTask systemProperty(String name, Object argument) {
+        systemProperties.put(name, argument);
+        return this;
+    }
+
+    public SpotBugsTask systemProperties(Map<String, Object> arguments) {
+        systemProperties.putAll(arguments);
         return this;
     }
 
@@ -628,5 +643,21 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
 
     public void setJvmArgs(Collection<String> jvmArgs) {
         this.jvmArgs = jvmArgs;
+    }
+
+    /**
+     * System properties passed to SpotBugs for additional configuration.
+     * <p>
+     * See the <a href="https://spotbugs.readthedocs.io/en/stable/analysisprops.html">Analysis Properties</a> section for available values.
+     * @return The system properties to pass to the analysis
+     */
+    @Input
+    @Optional
+    public Map<String, Object> getSystemProperties() {
+        return systemProperties;
+    }
+
+    public void setSystemProperties(Map<String, Object> systemProperties) {
+        this.systemProperties = systemProperties;
     }
 }

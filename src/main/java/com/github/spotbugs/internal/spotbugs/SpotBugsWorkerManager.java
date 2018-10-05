@@ -24,6 +24,7 @@ public class SpotBugsWorkerManager {
       javaCommand.setWorkingDir(workingDir);
       javaCommand.setMaxHeapSize(spec.getMaxHeapSize());
       javaCommand.jvmArgs(spec.getJvmArgs());
+      javaCommand.systemProperties(spec.getSystemProperties());
       return builder.build();
   }
 }
