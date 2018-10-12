@@ -169,6 +169,8 @@ public class SpotBugsPlugin extends AbstractCodeQualityPlugin<SpotBugsTask> {
 
         taskMapping.map("extraArgs", extension::getExtraArgs);
         taskMapping.map("showProgress", extension::isShowProgress);
+
+        taskMapping.map("jvmArgs", extension::getJvmArgs);
     }
 
     private void configureReportsConventionMapping(SpotBugsTask task, final String baseName) {
@@ -182,7 +184,7 @@ public class SpotBugsPlugin extends AbstractCodeQualityPlugin<SpotBugsTask> {
     @Override
     protected void configureForSourceSet(final SourceSet sourceSet, SpotBugsTask task) {
         task.setDescription("Run SpotBugs analysis for " + sourceSet.getName() + " classes");
-        task.setSource(sourceSet.getAllJava());
+        task.setSourceSet(sourceSet);
         ConventionMapping taskMapping = task.getConventionMapping();
         taskMapping.map("classes", (Callable<FileCollection>) () -> {
             /*

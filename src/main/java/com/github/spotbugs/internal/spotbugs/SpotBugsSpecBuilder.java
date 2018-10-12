@@ -44,7 +44,7 @@ public class SpotBugsSpecBuilder {
     private boolean debugEnabled;
 
     public SpotBugsSpecBuilder(FileCollection classes) {
-        if(classes == null || classes.isEmpty()){
+        if (classes == null || classes.isEmpty()) {
             throw new InvalidUserDataException("No classes configured for SpotBugs analysis.");
         }
         this.classes = classes;
@@ -138,12 +138,12 @@ public class SpotBugsSpecBuilder {
         return this;
     }
 
-    public SpotBugsSpecBuilder withShowProgress(boolean showProgress){
+    public SpotBugsSpecBuilder withShowProgress(boolean showProgress) {
         this.showProgress = showProgress;
         return this;
     }
 
-    public SpotBugsSpecBuilder withDebugging(boolean debugEnabled){
+    public SpotBugsSpecBuilder withDebugging(boolean debugEnabled) {
         this.debugEnabled = debugEnabled;
         return this;
     }
@@ -161,7 +161,7 @@ public class SpotBugsSpecBuilder {
     public SpotBugsSpec build() {
         ArrayList<String> args = new ArrayList<>();
         args.add("-pluginList");
-        args.add(pluginsList==null ? "" : pluginsList.getAsPath());
+        args.add(pluginsList == null ? "" : pluginsList.getAsPath());
         args.add("-sortByClass");
         args.add("-timestampNow");
 

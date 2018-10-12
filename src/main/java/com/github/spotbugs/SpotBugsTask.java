@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SkipWhenEmpty;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.VerificationTask;
@@ -59,6 +61,8 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
     private FileCollection classes;
 
     private FileCollection classpath;
+
+    private Set<File> sourceDirs;
 
     private FileCollection spotbugsClasspath;
 
@@ -245,7 +249,7 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
     SpotBugsSpec generateSpec() {
         SpotBugsSpecBuilder specBuilder = new SpotBugsSpecBuilder(getClasses())
                 .withPluginsList(getPluginClasspath())
-                .withSources(getSource())
+                .withSources(getAllSource())
                 .withClasspath(getClasspath())
                 .withShowProgress(getShowProgress())
                 .withDebugging(getLogger().isDebugEnabled())
@@ -328,6 +332,12 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
         return this;
     }
 
+    SpotBugsTask setSourceSet(SourceSet sourceSet) {
+        this.sourceDirs = sourceSet.getAllJava().getSrcDirs();
+        setSource(sourceDirs);
+        return this;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -335,6 +345,12 @@ public class SpotBugsTask extends SourceTask implements VerificationTask, Report
     @PathSensitive(PathSensitivity.RELATIVE)
     public FileTree getSource() {
         return super.getSource();
+    }
+
+    @Input
+    @PathSensitive(PathSensitivity.RELATIVE)
+    FileCollection getAllSource() {
+        return getProject().files(sourceDirs).plus(getSource());
     }
 
     /**
